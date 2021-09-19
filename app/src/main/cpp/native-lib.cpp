@@ -72,24 +72,14 @@ Java_com_oyp_ndkdemo_JNI_encode(JNIEnv *env, jobject thiz, jstring pass, jint le
     LOGD("调用加密方法");
     // 将java字符串转换成C字符串
     char *cstr = jstringTostring(env, pass);
-
-    // log打印的方法中不能传入jstring，必须将jstring转为c中的字符数组在传入到方法里面打印，否则会报错。
-    const char *source = env->GetStringUTFChars(pass, 0);
-    LOGD("加密前的字符串为:【%s】",source);
-    env-> ReleaseStringUTFChars(pass,source);
-
+    LOGD("加密前的字符串为:【%s】",cstr);
     // 把所有元素取出来，+1
     int i;
     for (i = 0; i < length; i++) {
         *(cstr + i) += 1;
     }
-    jstring result =  env->NewStringUTF(cstr);
-
-    const char *source2 = env->GetStringUTFChars(result, 0);
     LOGD("加密后的字符串为:【%s】",cstr);
-    env-> ReleaseStringUTFChars(result,source2);
-
-    return result;
+    return  env->NewStringUTF(cstr);
 }
 
 /*从C层返回一个解密后的字符串*/
@@ -97,25 +87,16 @@ extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_oyp_ndkdemo_JNI_decode(JNIEnv *env, jobject thiz, jstring pass, jint length) {
     LOGD("调用解密方法");
+    // 将java字符串转换成C字符串
     char *cstr = jstringTostring(env, pass);
-
-    const char *source = env->GetStringUTFChars(pass, 0);
-    LOGD("解密前的字符串为:【%s】",source);
-    env-> ReleaseStringUTFChars(pass,source);
-
+    LOGD("加密前的字符串为:【%s】",cstr);
     // 把所有元素取出来，+1
     int i;
     for (i = 0; i < length; i++) {
         *(cstr + i) -= 1;
     }
-
-    jstring result =  env->NewStringUTF(cstr);
-
-    const char *source2 = env->GetStringUTFChars(result, 0);
-    LOGD("解密后的字符串为:【%s】",source2);
-    env-> ReleaseStringUTFChars(result,source2);
-
-    return result;
+    LOGD("加密前的字符串为:【%s】",cstr);
+    return  env->NewStringUTF(cstr);
 }
 
 int com(const void *a, const void *b) {
