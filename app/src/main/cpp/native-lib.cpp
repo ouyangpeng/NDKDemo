@@ -33,7 +33,7 @@ char *jstringTostring(JNIEnv *env, jstring jstr) {
 
 /*从C层返回一个字符串*/
 extern "C" JNIEXPORT jstring JNICALL
-Java_com_oyp_ndkdemo_MainActivity_stringFromJNI(
+Java_com_oyp_ndkdemo_JNI_stringFromJNI(
         JNIEnv *env,
         jobject /* this */) {
     std::string hello = "Hello from C++ , OuyangPeng's Blog : https://blog.csdn.net/ouyang_peng/";
@@ -43,7 +43,7 @@ Java_com_oyp_ndkdemo_MainActivity_stringFromJNI(
 /*从C层返回一个加密后的字符串*/
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_oyp_ndkdemo_MainActivity_encode(JNIEnv *env, jobject thiz, jstring pass, jint length) {
+Java_com_oyp_ndkdemo_JNI_encode(JNIEnv *env, jobject thiz, jstring pass, jint length) {
     // 将java字符串转换成C字符串
     char *cstr = jstringTostring(env, pass);
     // 把所有元素取出来，+1
@@ -57,7 +57,7 @@ Java_com_oyp_ndkdemo_MainActivity_encode(JNIEnv *env, jobject thiz, jstring pass
 /*从C层返回一个解密后的字符串*/
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_oyp_ndkdemo_MainActivity_decode(JNIEnv *env, jobject thiz, jstring pass, jint length) {
+Java_com_oyp_ndkdemo_JNI_decode(JNIEnv *env, jobject thiz, jstring pass, jint length) {
     char *cstr = jstringTostring(env, pass);
     // 把所有元素取出来，+1
     int i;
@@ -65,4 +65,18 @@ Java_com_oyp_ndkdemo_MainActivity_decode(JNIEnv *env, jobject thiz, jstring pass
         *(cstr + i) -= 1;
     }
     return env->NewStringUTF(cstr);
+}
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_oyp_ndkdemo_JNI_transmit(JNIEnv *env, jobject thiz, jintArray intarray) {
+    // 给数组的每个数字加10
+
+    // 拿到数组首地址
+    int *p = env->GetIntArrayElements(intarray,JNI_FALSE);
+    // 拿到数组长度
+    jsize size = env-> GetArrayLength(intarray);
+    int i;
+    for (i = 0; i < size; i++) {
+        *(p + i) += 10;
+    }
 }
