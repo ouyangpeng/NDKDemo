@@ -14,4 +14,7 @@ object JNI {
     external fun encode(pass: String, length: Int): String
 
     external fun decode(pass: String, length: Int): String
+
+    external fun transmit(array: IntArray) : IntArray
+
 }

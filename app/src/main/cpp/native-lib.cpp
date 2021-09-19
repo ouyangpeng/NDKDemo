@@ -1,7 +1,6 @@
 #include <jni.h>
 #include <string>
 
-
 /*C字符串转JNI字符串*/
 jstring stoJstring(JNIEnv *env, const char *pat) {
     jclass strClass = env->FindClass("Ljava/lang/String;");
@@ -66,17 +65,24 @@ Java_com_oyp_ndkdemo_JNI_decode(JNIEnv *env, jobject thiz, jstring pass, jint le
     }
     return env->NewStringUTF(cstr);
 }
+
+int com(const void *a, const void *b) {
+    return *(int *) a - *(int *) b;//升序
+}
+
 extern "C"
-JNIEXPORT void JNICALL
-Java_com_oyp_ndkdemo_JNI_transmit(JNIEnv *env, jobject thiz, jintArray intarray) {
+JNIEXPORT jintArray  JNICALL
+Java_com_oyp_ndkdemo_JNI_transmit(JNIEnv *env, jobject thiz, jintArray intArray) {
     // 给数组的每个数字加10
 
-    // 拿到数组首地址
-    int *p = env->GetIntArrayElements(intarray,JNI_FALSE);
+    jint *receivedint = env->GetIntArrayElements(intArray, JNI_FALSE);
     // 拿到数组长度
-    jsize size = env-> GetArrayLength(intarray);
-    int i;
-    for (i = 0; i < size; i++) {
-        *(p + i) += 10;
+    jsize size = env->GetArrayLength(intArray);
+
+    for (int i = 0; i < size; i++) {
+        int value = (int) (*(receivedint + i) * 2);
+        printf("%d\t", value);
+        env->SetIntArrayRegion(intArray, i, 1, &value);
     }
+    return intArray;
 }
