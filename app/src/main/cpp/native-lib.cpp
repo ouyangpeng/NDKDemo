@@ -73,16 +73,33 @@ int com(const void *a, const void *b) {
 extern "C"
 JNIEXPORT jintArray  JNICALL
 Java_com_oyp_ndkdemo_JNI_transmit(JNIEnv *env, jobject thiz, jintArray intArray) {
-    // 给数组的每个数字加10
-
     jint *receivedint = env->GetIntArrayElements(intArray, JNI_FALSE);
     // 拿到数组长度
     jsize size = env->GetArrayLength(intArray);
 
+    // 把数组的每个数字 都*2
     for (int i = 0; i < size; i++) {
-        int value = (int) (*(receivedint + i) * 2);
+        // int value = (int) (*(receivedint + i) * 2);
+        int value = receivedint[i] * 2;
         printf("%d\t", value);
         env->SetIntArrayRegion(intArray, i, 1, &value);
     }
     return intArray;
+}
+
+extern "C"
+JNIEXPORT jint JNICALL
+Java_com_oyp_ndkdemo_JNI_intArraySum(JNIEnv *env, jobject thiz, jintArray intArray) {
+    jint *receivedint = env->GetIntArrayElements(intArray, JNI_FALSE);
+    if(receivedint == NULL){
+        return 0;
+    }
+    // 拿到数组长度
+    jsize size = env->GetArrayLength(intArray);
+    int sum = 0;
+    for (int i = 0; i < size; i++) {
+        //sum += *(receivedint + i);
+        sum += receivedint[i];
+    }
+    return sum;
 }

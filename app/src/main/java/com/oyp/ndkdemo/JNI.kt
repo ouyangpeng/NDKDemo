@@ -17,4 +17,6 @@ object JNI {
 
     external fun transmit(array: IntArray) : IntArray
 
+    external fun intArraySum(array: IntArray) : Int
+
 }
