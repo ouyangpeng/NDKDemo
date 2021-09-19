@@ -39,18 +39,29 @@ jstring stringToJstring(JNIEnv *env, const char *pat) {
 /*JNI字符串转C字符串*/
 char *jstringTostring(JNIEnv *env, jstring jstr) {
     LOGD("调用JNI字符串转C字符串的方法");
+    // 字符指针，也就是C的字符串
     char *rtn = NULL;
     jclass clsstring = env->FindClass("java/lang/String");
     jstring strencode = env->NewStringUTF("utf-8");
     jmethodID mid = env->GetMethodID(clsstring, "getBytes", "(Ljava/lang/String;)[B");
+    // 实际上就是调用了 java层的 String.getBytes 方法 , 得到字节数组
+    // jstr 需要转换的java字符串
+    // mid String类里面的getBytes 方法，参数是string
+    // strencode java字符串，值为 "utf-8"
     jbyteArray barr = (jbyteArray) env->CallObjectMethod(jstr, mid, strencode);
+    // 得到字节数组的长度
     jsize alen = env->GetArrayLength(barr);
+    // 得到字节数组的首地址
     jbyte *ba = env->GetByteArrayElements(barr, JNI_FALSE);
     if (alen > 0) {
-        rtn = (char *) malloc(alen + 1);
+        // 申请堆内存，存放字节数组的所有数据，最后还要加一个结束符 \0
+        rtn = (char *) malloc(alen + 1); // 为啥要加1 因为 需要有结尾 "\0"
+        // 内存数据拷贝: 把字节数组的所有元素 拷贝 到 rtn所指的堆内存中
         memcpy(rtn, ba, alen);
+        // 把最后一个元素 置为0 结束符
         rtn[alen] = 0;
     }
+    // 释放 原来的字节数组
     env->ReleaseByteArrayElements(barr, ba, 0);
     return rtn;
 }
