@@ -1,32 +1,35 @@
 #include <jni.h>
 #include <string>
 
-// 实现 C语言中打印log到android控制台
-// 导入 头文件 android/log.h
-#include <android/log.h>
-// 定义一些宏
-#define DEBUG 1 //日志开关，1为开，其它为关
-#if(DEBUG==1)
-// 定义LOG 标签
-#define LOG_TAG "JNI_LOG_TAG"
-// 定义几个打印日志的方法
-// log打印的方法中不能传入jstring，必须将jstring转为c中的字符数组在传入到方法里面打印，否则会报错。
-#define LOGV(...) __android_log_print(ANDROID_LOG_VERBOSE, LOG_TAG, __VA_ARGS__)
-#define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG , LOG_TAG, __VA_ARGS__)
-#define LOGI(...) __android_log_print(ANDROID_LOG_INFO , LOG_TAG, __VA_ARGS__)
-#define LOGW(...) __android_log_print(ANDROID_LOG_WARN , LOG_TAG, __VA_ARGS__)
-#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR , LOG_TAG, __VA_ARGS__)
-#else
-#define LOGV(...) NULL
-#define LOGD(...) NULL
-#define LOGI(...) NULL
-#define LOGW(...) NULL
-#define LOGE(...) NULL
-#endif
+// 导入定义的日志打印工具
+#include "CLogUtils.h"
+
+//// 实现 C语言中打印log到android控制台
+//// 导入 头文件 android/log.h
+//#include <android/log.h>
+//// 定义一些宏
+//#define DEBUG 1 //日志开关，1为开，其它为关
+//#if(DEBUG==1)
+//// 定义LOG 标签
+//#define LOG_TAG "JNI_LOG_TAG"
+//// 定义几个打印日志的方法
+//// log打印的方法中不能传入jstring，必须将jstring转为c中的字符数组在传入到方法里面打印，否则会报错。
+//#define LOGV(...) __android_log_print(ANDROID_LOG_VERBOSE, LOG_TAG, __VA_ARGS__)
+//#define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG , LOG_TAG, __VA_ARGS__)
+//#define LOGI(...) __android_log_print(ANDROID_LOG_INFO , LOG_TAG, __VA_ARGS__)
+//#define LOGW(...) __android_log_print(ANDROID_LOG_WARN , LOG_TAG, __VA_ARGS__)
+//#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR , LOG_TAG, __VA_ARGS__)
+//#else
+//#define LOGV(...) NULL
+//#define LOGD(...) NULL
+//#define LOGI(...) NULL
+//#define LOGW(...) NULL
+//#define LOGE(...) NULL
+//#endif
 
 /*C字符串转JNI字符串*/
 jstring stringToJstring(JNIEnv *env, const char *pat) {
-    LOGD("C字符串转JNI字符串");
+//    LOGD("C字符串转JNI字符串");
     jclass strClass = env->FindClass("Ljava/lang/String;");
     jmethodID ctorID = env->GetMethodID(strClass, "<init>", "([BLjava/lang/String;)V");
     jbyteArray bytes = env->NewByteArray(strlen(pat));
@@ -147,4 +150,12 @@ Java_com_oyp_ndkdemo_JNI_intArraySum(JNIEnv *env, jobject thiz, jintArray intArr
         sum += receivedint[i];
     }
     return sum;
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_oyp_ndkdemo_JNI_testLog(JNIEnv *env, jobject thiz) {
+    LOGD("Let's test JNI print Android Log");
+    LOGD("Let's test JNI print Android Log,  test print one number: [%d]", 10);
+    LOGD("Let's test JNI print Android Log,  test print a string:[%s] ,and one number : [%d]", "num", 20);
 }

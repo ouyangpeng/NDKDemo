@@ -19,4 +19,6 @@ object JNI {
 
     external fun intArraySum(array: IntArray) : Int
 
+    external fun testLog()
+
 }

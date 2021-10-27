@@ -17,6 +17,8 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        JNI.testLog()
+
         // 调用jni方法 返回一个C++的字符串
         val text1 = JNI.stringFromJNI()
         // 调用jni方法 对字符串加密 然后返回
