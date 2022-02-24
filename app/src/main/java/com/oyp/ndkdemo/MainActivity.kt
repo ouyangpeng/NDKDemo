@@ -48,18 +48,18 @@ class MainActivity : AppCompatActivity() {
         val bean = FaceFeatureBean(
             faceId = 1,
             boundingBox = arrayOf(
-                PointF(0.1f, 0.2f),
-                PointF(0.3f, 0.4f)
+                PointF(0.10f, 0.20f),
+                PointF(0.30f, 0.40f)
             ),
             landmarks = arrayOf(
-                PointF(0.5f, 0.6f),
-                PointF(0.7f, 0.8f)
+                PointF(0.50f, 0.60f),
+                PointF(0.70f, 0.80f)
             ),
             visibilities = listOf(
-                100.1f,
-                100.2f,
-                100.3f,
-                100.4f
+                100.10f,
+                100.20f,
+                100.30f,
+                100.40f
             ),
             yaw = 0.99f,
             pitch = 0.88f,
@@ -67,5 +67,8 @@ class MainActivity : AppCompatActivity() {
         )
 
         JNI.setFaceFeature(bean)
+
+        JNI.setFaceFeature2(bean)
+
     }
 }

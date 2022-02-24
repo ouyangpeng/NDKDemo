@@ -32,4 +32,9 @@ object JNI {
                                                   boundingBox: Array<PointF>,
                                                   landmarks: Array<PointF>)
 
+    fun setFaceFeature2(feature: FaceFeatureBean){
+        nativeSetFaceFeatureBean2(feature)
+    }
+
+    private external fun nativeSetFaceFeatureBean2(feature: FaceFeatureBean)
 }

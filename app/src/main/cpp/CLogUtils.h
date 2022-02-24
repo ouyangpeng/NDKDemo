@@ -13,8 +13,8 @@
 // 文件名
 #define __FILENAME__ (strrchr(__FILE__, '/') + 1)
 
-#ifdef LOG_SWITCH_STATUS_ON
-// 定义LOG 标签
+//#ifdef LOG_SWITCH_STATUS_ON
+//// 定义LOG 标签
 #define TAG "NDK_JNI_LOG_TAG"
 // 定义几个打印日志的方法
 #define LOGV(format, ...) __android_log_print(ANDROID_LOG_VERBOSE, TAG,\
@@ -27,13 +27,14 @@
         "[%s][%s][%d]: " format, __FILENAME__, __FUNCTION__, __LINE__, ##__VA_ARGS__);
 #define LOGE(format, ...) __android_log_print(ANDROID_LOG_ERROR, TAG,\
         "[%s][%s][%d]: " format, __FILENAME__, __FUNCTION__, __LINE__, ##__VA_ARGS__);
-#else
-#define LOGV(format, ...);
-#define LOGD(format, ...);
-#define LOGI(format, ...);
-#define LOGW(format, ...);
-#define LOGE(format, ...);
-#endif
+
+//#else
+//#define LOGV(format, ...);
+//#define LOGD(format, ...);
+//#define LOGI(format, ...);
+//#define LOGW(format, ...);
+//#define LOGE(format, ...);
+//#endif
 
 
 #endif //NDKDEMO_CLOGUTILS_H

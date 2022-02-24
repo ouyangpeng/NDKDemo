@@ -198,6 +198,7 @@ JNIEXPORT void JNICALL
 Java_com_oyp_ndkdemo_JNI_nativeSetFaceFeatureBean(JNIEnv *env, jobject thiz, jobject feature,
                                                   jobjectArray boundingBoxArray,
                                                   jobjectArray landmarksArray) {
+    LOGD("=================================Java_com_oyp_ndkdemo_JNI_nativeSetFaceFeatureBean=================================")
     // 获取FaceFeatureBean类
     jclass jFeature = env->GetObjectClass(feature);
 
@@ -207,12 +208,6 @@ Java_com_oyp_ndkdemo_JNI_nativeSetFaceFeatureBean(JNIEnv *env, jobject thiz, job
     jmethodID getPitch = env->GetMethodID(jFeature, "getPitch", "()F");
     jmethodID getRoll = env->GetMethodID(jFeature, "getRoll", "()F");
 
-    jmethodID getBoundingBox = env->GetMethodID(jFeature, "getBoundingBox",
-                                                "()[Landroid/graphics/PointF;");
-    jmethodID getLandmarks = env->GetMethodID(jFeature, "getLandmarks",
-                                              "()[Landroid/graphics/PointF;");
-    jmethodID getVisibilities = env->GetMethodID(jFeature, "getVisibilities", "()Ljava/util/List;");
-
     // 执行方法 拿到属性
     jint faceId = env->CallIntMethod(feature, getFaceId);
     jfloat yaw = env->CallFloatMethod(feature, getYaw);
@@ -220,8 +215,7 @@ Java_com_oyp_ndkdemo_JNI_nativeSetFaceFeatureBean(JNIEnv *env, jobject thiz, job
     jfloat roll = env->CallFloatMethod(feature, getRoll);
     LOGD("faceId = %d,yaw = %f,pitch = %f,roll = %f", faceId, yaw, pitch, roll)
 
-    jobject boundingBoxObject = env->CallObjectMethod(feature,getBoundingBox);
-    jobject landmarksObject  = env->CallObjectMethod(feature,getLandmarks);
+    jmethodID getVisibilities = env->GetMethodID(jFeature, "getVisibilities", "()Ljava/util/List;");
     jobject visibilities = env->CallObjectMethod(feature, getVisibilities);
 
     // 遍历 visibilities，拿到List的各个Item
@@ -269,5 +263,91 @@ Java_com_oyp_ndkdemo_JNI_nativeSetFaceFeatureBean(JNIEnv *env, jobject thiz, job
         jfloat x = env->GetFloatField(point,xID);
         jfloat y = env->GetFloatField(point,yID);
         LOGD("landmarksArray 第 %d 个值为：x = %f , y = %f", i + 1, x,y)
+    }
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_oyp_ndkdemo_JNI_nativeSetFaceFeatureBean2(JNIEnv *env, jobject thiz, jobject feature) {
+
+    LOGD("=================================Java_com_oyp_ndkdemo_JNI_nativeSetFaceFeatureBean2=================================")
+
+    // 获取FaceFeatureBean类的class
+    jclass jFeature = env->GetObjectClass(feature);
+
+    // 执行方法 拿到属性
+    jfieldID faceIdID = env->GetFieldID(jFeature,"faceId","I");
+    jint faceId = env->GetIntField(feature,faceIdID);
+
+    jfieldID yawID = env->GetFieldID(jFeature,"yaw","F");
+    jfloat yaw = env->GetFloatField(feature,yawID);
+
+    jfieldID pitchID = env->GetFieldID(jFeature,"pitch","F");
+    jfloat pitch = env->GetFloatField(feature,pitchID);
+
+    jfieldID rollID = env->GetFieldID(jFeature,"roll","F");
+    jfloat roll = env->GetFloatField(feature,rollID);
+    LOGD("faceId = %d,yaw = %f,pitch = %f,roll = %f", faceId, yaw, pitch, roll)
+
+
+    // 参考自：https://www.cnblogs.com/yongdaimi/p/15094393.html
+    // https://stackoverflow.com/questions/1086596/how-to-access-arrays-within-an-object-with-jni
+
+    jfieldID boundingBoxId = env->GetFieldID(jFeature,"boundingBox","[Landroid/graphics/PointF;");
+    jobject boundingBox = env->GetObjectField(feature,boundingBoxId);
+    auto * boundingBoxArray = reinterpret_cast<jobjectArray *>(&boundingBox);
+
+    const jint length = env->GetArrayLength(*boundingBoxArray);
+    for(int i=0;i<length;i++){
+        jobject point= env->GetObjectArrayElement(*boundingBoxArray,i);
+        //1.获得实例对应的class类
+        jclass jcls = env->GetObjectClass(point);
+        //2.通过class类找到对应的field id
+        //num 为java类中变量名，I 为变量的类型int
+        jfieldID xID = env->GetFieldID(jcls,"x","F");
+        jfieldID yID = env->GetFieldID(jcls,"y","F");
+
+        jfloat x = env->GetFloatField(point,xID);
+        jfloat y = env->GetFloatField(point,yID);
+        LOGD("boundingBoxArray数组中 第 %d 个值为：x = %f , y = %f", i + 1, x,y)
+    }
+
+    jfieldID landmarksId = env->GetFieldID(jFeature,"landmarks","[Landroid/graphics/PointF;");
+    jobject landmarks = env->GetObjectField(feature,landmarksId);
+    auto * landmarksArray = reinterpret_cast<jobjectArray *>(&landmarks);
+
+    const jint length2 = env->GetArrayLength(*landmarksArray);
+    for(int i=0;i<length2;i++){
+        jobject point= env->GetObjectArrayElement(*landmarksArray,i);
+        //1.获得实例对应的class类
+        jclass jcls = env->GetObjectClass(point);
+        //2.通过class类找到对应的field id
+        //num 为java类中变量名，I 为变量的类型int
+        jfieldID xID = env->GetFieldID(jcls,"x","F");
+        jfieldID yID = env->GetFieldID(jcls,"y","F");
+
+        jfloat x = env->GetFloatField(point,xID);
+        jfloat y = env->GetFloatField(point,yID);
+        LOGD("landmarksArray 第 %d 个值为：x = %f , y = %f", i + 1, x,y)
+    }
+
+    jfieldID visibilitiesId = env->GetFieldID(jFeature,"visibilities","Ljava/util/List;");
+    jobject visibilities = env->GetObjectField(feature,visibilitiesId);
+
+    // 遍历 visibilities，拿到List的各个Item
+    // 获取ArrayList对象
+    jclass jcs_alist = env->GetObjectClass(visibilities);
+    // 获取ArrayList的methodid
+    jmethodID alist_get = env->GetMethodID(jcs_alist, "get", "(I)Ljava/lang/Object;");
+    jmethodID alist_size = env->GetMethodID(jcs_alist, "size", "()I");
+    jint len = env->CallIntMethod(visibilities, alist_size);
+    for (int i = 0; i < len; i++) {
+        // 获取StuInfo对象
+        jobject float_obj = env->CallObjectMethod(visibilities, alist_get, i);
+        // 获取 StuInfo 类
+        jclass float_cls = env->GetObjectClass(float_obj);
+        jmethodID getFloatValue = env->GetMethodID(float_cls, "floatValue", "()F");
+        jfloat floatValue = env->CallFloatMethod(float_obj, getFloatValue);
+        LOGD("visibilities列表中 第 %d 个值为：floatValue = %f", i + 1, floatValue)
     }
 }
