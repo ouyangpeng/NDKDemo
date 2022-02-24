@@ -25,12 +25,10 @@ object JNI {
 
 
     fun setFaceFeature(feature: FaceFeatureBean){
-        nativeSetFaceFeatureBean(feature,feature.boundingBox,feature.landmarks)
+        nativeSetFaceFeatureBean(feature)
     }
 
-    private external fun nativeSetFaceFeatureBean(feature: FaceFeatureBean,
-                                                  boundingBox: Array<PointF>,
-                                                  landmarks: Array<PointF>)
+    private external fun nativeSetFaceFeatureBean(feature: FaceFeatureBean)
 
     fun setFaceFeature2(feature: FaceFeatureBean){
         nativeSetFaceFeatureBean2(feature)

@@ -195,9 +195,7 @@ Ljava/net/Socket; Socket jobject
  */
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_oyp_ndkdemo_JNI_nativeSetFaceFeatureBean(JNIEnv *env, jobject thiz, jobject feature,
-                                                  jobjectArray boundingBoxArray,
-                                                  jobjectArray landmarksArray) {
+Java_com_oyp_ndkdemo_JNI_nativeSetFaceFeatureBean(JNIEnv *env, jobject thiz, jobject feature) {
     LOGD("=================================Java_com_oyp_ndkdemo_JNI_nativeSetFaceFeatureBean=================================")
     // 获取FaceFeatureBean类
     jclass jFeature = env->GetObjectClass(feature);
@@ -235,9 +233,15 @@ Java_com_oyp_ndkdemo_JNI_nativeSetFaceFeatureBean(JNIEnv *env, jobject thiz, job
         LOGD("visibilities列表中 第 %d 个值为：floatValue = %f", i + 1, floatValue)
     }
 
-    const jint length = env->GetArrayLength(boundingBoxArray);
+
+    jmethodID getBoundingBox = env->GetMethodID(jFeature, "getBoundingBox",
+                                                "()[Landroid/graphics/PointF;");
+    jobject boundingBox = env->CallObjectMethod(feature,getBoundingBox);
+    auto * boundingBoxArray = reinterpret_cast<jobjectArray *>(&boundingBox);
+
+    const jint length = env->GetArrayLength(*boundingBoxArray);
     for(int i=0;i<length;i++){
-        jobject point= env->GetObjectArrayElement(boundingBoxArray,i);
+        jobject point= env->GetObjectArrayElement(*boundingBoxArray,i);
         //1.获得实例对应的class类
         jclass jcls = env->GetObjectClass(point);
         //2.通过class类找到对应的field id
@@ -250,9 +254,13 @@ Java_com_oyp_ndkdemo_JNI_nativeSetFaceFeatureBean(JNIEnv *env, jobject thiz, job
         LOGD("boundingBoxArray数组中 第 %d 个值为：x = %f , y = %f", i + 1, x,y)
     }
 
-    const jint length2 = env->GetArrayLength(landmarksArray);
+    jmethodID getLandmarks = env->GetMethodID(jFeature, "getLandmarks",
+                                              "()[Landroid/graphics/PointF;");
+    jobject landmarks  = env->CallObjectMethod(feature,getLandmarks);
+    auto * landmarksArray = reinterpret_cast<jobjectArray *>(&landmarks);
+    const jint length2 = env->GetArrayLength(*landmarksArray);
     for(int i=0;i<length2;i++){
-        jobject point= env->GetObjectArrayElement(landmarksArray,i);
+        jobject point= env->GetObjectArrayElement(*landmarksArray,i);
         //1.获得实例对应的class类
         jclass jcls = env->GetObjectClass(point);
         //2.通过class类找到对应的field id
