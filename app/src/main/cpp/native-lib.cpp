@@ -30,7 +30,7 @@
 /*C字符串转JNI字符串*/
 jstring stringToJstring(JNIEnv *env, const char *pat) {
 //    LOGD("C字符串转JNI字符串");
-    jclass strClass = env->FindClass("Ljava/lang/String;");
+    jclass strClass = env->FindClass("java/lang/String");
     jmethodID ctorID = env->GetMethodID(strClass, "<init>", "([BLjava/lang/String;)V");
     jbyteArray bytes = env->NewByteArray(strlen(pat));
     env->SetByteArrayRegion(bytes, 0, strlen(pat), (jbyte *) pat);
@@ -41,9 +41,9 @@ jstring stringToJstring(JNIEnv *env, const char *pat) {
 
 /*JNI字符串转C字符串*/
 char *jstringTostring(JNIEnv *env, jstring jstr) {
-    LOGD("调用JNI字符串转C字符串的方法");
+    LOGD("调用JNI字符串转C字符串的方法")
     // 字符指针，也就是C的字符串
-    char *rtn = NULL;
+    char *rtn = nullptr;
     jclass clsstring = env->FindClass("java/lang/String");
     jstring strencode = env->NewStringUTF("utf-8");
     jmethodID mid = env->GetMethodID(clsstring, "getBytes", "(Ljava/lang/String;)[B");
@@ -74,7 +74,7 @@ extern "C" JNIEXPORT jstring JNICALL
 Java_com_oyp_ndkdemo_JNI_stringFromJNI(
         JNIEnv *env,
         jobject /* this */) {
-    LOGD("调用C层返回字符串的方法");
+    LOGD("调用C层返回字符串的方法")
     std::string hello = "Hello from C++ , OuyangPeng's Blog : https://blog.csdn.net/ouyang_peng/";
     return env->NewStringUTF(hello.c_str());
 }
@@ -83,16 +83,16 @@ Java_com_oyp_ndkdemo_JNI_stringFromJNI(
 extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_oyp_ndkdemo_JNI_encode(JNIEnv *env, jobject thiz, jstring pass, jint length) {
-    LOGD("调用加密方法");
+    LOGD("调用加密方法")
     // 将java字符串转换成C字符串
     char *cstr = jstringTostring(env, pass);
-    LOGD("加密前的字符串为:【%s】",cstr);
+    LOGD("加密前的字符串为:【%s】",cstr)
     // 把所有元素取出来，+1
     int i;
     for (i = 0; i < length; i++) {
         *(cstr + i) += 1;
     }
-    LOGD("加密后的字符串为:【%s】",cstr);
+    LOGD("加密后的字符串为:【%s】",cstr)
     return  env->NewStringUTF(cstr);
 }
 
@@ -100,16 +100,16 @@ Java_com_oyp_ndkdemo_JNI_encode(JNIEnv *env, jobject thiz, jstring pass, jint le
 extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_oyp_ndkdemo_JNI_decode(JNIEnv *env, jobject thiz, jstring pass, jint length) {
-    LOGD("调用解密方法");
+    LOGD("调用解密方法")
     // 将java字符串转换成C字符串
     char *cstr = jstringTostring(env, pass);
-    LOGD("加密前的字符串为:【%s】",cstr);
+    LOGD("加密前的字符串为:【%s】",cstr)
     // 把所有元素取出来，+1
     int i;
     for (i = 0; i < length; i++) {
         *(cstr + i) -= 1;
     }
-    LOGD("加密前的字符串为:【%s】",cstr);
+    LOGD("加密前的字符串为:【%s】",cstr)
     return  env->NewStringUTF(cstr);
 }
 
@@ -120,7 +120,7 @@ int com(const void *a, const void *b) {
 extern "C"
 JNIEXPORT jintArray  JNICALL
 Java_com_oyp_ndkdemo_JNI_transmit(JNIEnv *env, jobject thiz, jintArray intArray) {
-    LOGD("调用数组操作的方法");
+    LOGD("调用数组操作的方法")
     jint *receivedint = env->GetIntArrayElements(intArray, JNI_FALSE);
     // 拿到数组长度
     jsize size = env->GetArrayLength(intArray);
@@ -137,7 +137,7 @@ Java_com_oyp_ndkdemo_JNI_transmit(JNIEnv *env, jobject thiz, jintArray intArray)
 extern "C"
 JNIEXPORT jint JNICALL
 Java_com_oyp_ndkdemo_JNI_intArraySum(JNIEnv *env, jobject thiz, jintArray intArray) {
-    LOGD("调用数组求和的方法");
+    LOGD("调用数组求和的方法")
     jint *receivedint = env->GetIntArrayElements(intArray, JNI_FALSE);
     if(receivedint == NULL){
         return 0;
@@ -155,7 +155,119 @@ Java_com_oyp_ndkdemo_JNI_intArraySum(JNIEnv *env, jobject thiz, jintArray intArr
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_oyp_ndkdemo_JNI_testLog(JNIEnv *env, jobject thiz) {
-    LOGD("Let's test JNI print Android Log");
-    LOGD("Let's test JNI print Android Log,  test print one number: [%d]", 10);
-    LOGD("Let's test JNI print Android Log,  test print a string:[%s] ,and one number : [%d]", "num", 20);
+    LOGD("Let's test JNI print Android Log")
+    LOGD("Let's test JNI print Android Log,  test print one number: [%d]", 10)
+    LOGD("Let's test JNI print Android Log,  test print a string:[%s] ,and one number : [%d]", "num", 20)
+}
+
+
+/**
+ *
+字符 Java类型 C类型
+V       void            void
+Z       jboolean       boolean
+I       jint              int
+J       jlong            long
+D      jdouble         double
+F      jfloat            float
+B      jbyte            byte
+C      jchar           char
+S      jshort          short
+
+数组则以"["开始，用两个字符表示
+[I       jintArray      int[]
+[F     jfloatArray    float[]
+[B     jbyteArray    byte[]
+[C    jcharArray    char[]
+[S    jshortArray   short[]
+[D    jdoubleArray double[]
+[J     jlongArray     long[]
+[Z    jbooleanArray boolean[]
+
+上面的都是基本类型。如果Java函数的参数是class，则以"L"开头，以";"结尾中间是用"/" 隔开的包及类名。
+ 而其对应的C函数名的参数则为jobject. 一个例外是String类，其对应的类为jstring
+
+Ljava/lang/String; String jstring
+Ljava/net/Socket; Socket jobject
+
+如果JAVA函数位于一个嵌入类，则用$作为类名间的分隔符。
+例如 "(Ljava/lang/String;Landroid/os/FileUtils$FileStatus;)Z"
+ */
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_oyp_ndkdemo_JNI_nativeSetFaceFeatureBean(JNIEnv *env, jobject thiz, jobject feature,
+                                                  jobjectArray boundingBoxArray,
+                                                  jobjectArray landmarksArray) {
+    // 获取FaceFeatureBean类
+    jclass jFeature = env->GetObjectClass(feature);
+
+    // 获取FaceFeatureBean对象的methodID
+    jmethodID getFaceId = env->GetMethodID(jFeature, "getFaceId", "()I");
+    jmethodID getYaw = env->GetMethodID(jFeature, "getYaw", "()F");
+    jmethodID getPitch = env->GetMethodID(jFeature, "getPitch", "()F");
+    jmethodID getRoll = env->GetMethodID(jFeature, "getRoll", "()F");
+
+    jmethodID getBoundingBox = env->GetMethodID(jFeature, "getBoundingBox",
+                                                "()[Landroid/graphics/PointF;");
+    jmethodID getLandmarks = env->GetMethodID(jFeature, "getLandmarks",
+                                              "()[Landroid/graphics/PointF;");
+    jmethodID getVisibilities = env->GetMethodID(jFeature, "getVisibilities", "()Ljava/util/List;");
+
+    // 执行方法 拿到属性
+    jint faceId = env->CallIntMethod(feature, getFaceId);
+    jfloat yaw = env->CallFloatMethod(feature, getYaw);
+    jfloat pitch = env->CallFloatMethod(feature, getPitch);
+    jfloat roll = env->CallFloatMethod(feature, getRoll);
+    LOGD("faceId = %d,yaw = %f,pitch = %f,roll = %f", faceId, yaw, pitch, roll)
+
+    jobject boundingBoxObject = env->CallObjectMethod(feature,getBoundingBox);
+    jobject landmarksObject  = env->CallObjectMethod(feature,getLandmarks);
+    jobject visibilities = env->CallObjectMethod(feature, getVisibilities);
+
+    // 遍历 visibilities，拿到List的各个Item
+    // 获取ArrayList对象
+    jclass jcs_alist = env->GetObjectClass(visibilities);
+    // 获取ArrayList的methodid
+    jmethodID alist_get = env->GetMethodID(jcs_alist, "get", "(I)Ljava/lang/Object;");
+    jmethodID alist_size = env->GetMethodID(jcs_alist, "size", "()I");
+    jint len = env->CallIntMethod(visibilities, alist_size);
+    for (int i = 0; i < len; i++) {
+        // 获取StuInfo对象
+        jobject float_obj = env->CallObjectMethod(visibilities, alist_get, i);
+        // 获取 StuInfo 类
+        jclass float_cls = env->GetObjectClass(float_obj);
+        jmethodID getFloatValue = env->GetMethodID(float_cls, "floatValue", "()F");
+        jfloat floatValue = env->CallFloatMethod(float_obj, getFloatValue);
+        LOGD("visibilities列表中 第 %d 个值为：floatValue = %f", i + 1, floatValue)
+    }
+
+    const jint length = env->GetArrayLength(boundingBoxArray);
+    for(int i=0;i<length;i++){
+        jobject point= env->GetObjectArrayElement(boundingBoxArray,i);
+        //1.获得实例对应的class类
+        jclass jcls = env->GetObjectClass(point);
+        //2.通过class类找到对应的field id
+        //num 为java类中变量名，I 为变量的类型int
+        jfieldID xID = env->GetFieldID(jcls,"x","F");
+        jfieldID yID = env->GetFieldID(jcls,"y","F");
+
+        jfloat x = env->GetFloatField(point,xID);
+        jfloat y = env->GetFloatField(point,yID);
+        LOGD("boundingBoxArray数组中 第 %d 个值为：x = %f , y = %f", i + 1, x,y)
+    }
+
+    const jint length2 = env->GetArrayLength(landmarksArray);
+    for(int i=0;i<length2;i++){
+        jobject point= env->GetObjectArrayElement(landmarksArray,i);
+        //1.获得实例对应的class类
+        jclass jcls = env->GetObjectClass(point);
+        //2.通过class类找到对应的field id
+        //num 为java类中变量名，I 为变量的类型int
+        jfieldID xID = env->GetFieldID(jcls,"x","F");
+        jfieldID yID = env->GetFieldID(jcls,"y","F");
+
+        jfloat x = env->GetFloatField(point,xID);
+        jfloat y = env->GetFloatField(point,yID);
+        LOGD("landmarksArray 第 %d 个值为：x = %f , y = %f", i + 1, x,y)
+    }
 }

@@ -1,11 +1,9 @@
 package com.oyp.ndkdemo
 
+import android.graphics.PointF
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.widget.TextView
 import com.oyp.ndkdemo.databinding.ActivityMainBinding
-import java.util.*
 
 class MainActivity : AppCompatActivity() {
     private val TAG = "NDKDemo"
@@ -45,5 +43,29 @@ class MainActivity : AppCompatActivity() {
                 "\n\n $text6  " +
                 "\n\n $text7"
 
+
+        // 传递给C++ 实体类  去jni层解析
+        val bean = FaceFeatureBean(
+            faceId = 1,
+            boundingBox = arrayOf(
+                PointF(0.1f, 0.2f),
+                PointF(0.3f, 0.4f)
+            ),
+            landmarks = arrayOf(
+                PointF(0.5f, 0.6f),
+                PointF(0.7f, 0.8f)
+            ),
+            visibilities = listOf(
+                100.1f,
+                100.2f,
+                100.3f,
+                100.4f
+            ),
+            yaw = 0.99f,
+            pitch = 0.88f,
+            roll = 0.77f
+        )
+
+        JNI.setFaceFeature(bean)
     }
 }

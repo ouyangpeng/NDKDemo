@@ -1,5 +1,7 @@
 package com.oyp.ndkdemo
 
+import android.graphics.PointF
+
 object JNI {
     // Used to load the 'ndkdemo' library on application startup.
     init {
@@ -20,5 +22,14 @@ object JNI {
     external fun intArraySum(array: IntArray) : Int
 
     external fun testLog()
+
+
+    fun setFaceFeature(feature: FaceFeatureBean){
+        nativeSetFaceFeatureBean(feature,feature.boundingBox,feature.landmarks)
+    }
+
+    private external fun nativeSetFaceFeatureBean(feature: FaceFeatureBean,
+                                                  boundingBox: Array<PointF>,
+                                                  landmarks: Array<PointF>)
 
 }
