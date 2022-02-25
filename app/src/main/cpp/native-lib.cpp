@@ -224,9 +224,9 @@ Java_com_oyp_ndkdemo_JNI_nativeSetFaceFeatureBean(JNIEnv *env, jobject thiz, job
     jmethodID alist_size = env->GetMethodID(jcs_alist, "size", "()I");
     jint len = env->CallIntMethod(visibilities, alist_size);
     for (int i = 0; i < len; i++) {
-        // 获取StuInfo对象
+        // 获取 Float 对象
         jobject float_obj = env->CallObjectMethod(visibilities, alist_get, i);
-        // 获取 StuInfo 类
+        // 获取 Float 类
         jclass float_cls = env->GetObjectClass(float_obj);
         jmethodID getFloatValue = env->GetMethodID(float_cls, "floatValue", "()F");
         jfloat floatValue = env->CallFloatMethod(float_obj, getFloatValue);
@@ -350,9 +350,9 @@ Java_com_oyp_ndkdemo_JNI_nativeSetFaceFeatureBean2(JNIEnv *env, jobject thiz, jo
     jmethodID alist_size = env->GetMethodID(jcs_alist, "size", "()I");
     jint len = env->CallIntMethod(visibilities, alist_size);
     for (int i = 0; i < len; i++) {
-        // 获取StuInfo对象
+        // 获取 Float对象
         jobject float_obj = env->CallObjectMethod(visibilities, alist_get, i);
-        // 获取 StuInfo 类
+        // 获取 Float 类
         jclass float_cls = env->GetObjectClass(float_obj);
         jmethodID getFloatValue = env->GetMethodID(float_cls, "floatValue", "()F");
         jfloat floatValue = env->CallFloatMethod(float_obj, getFloatValue);

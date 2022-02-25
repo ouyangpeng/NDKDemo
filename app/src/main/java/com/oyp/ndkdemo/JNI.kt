@@ -7,6 +7,7 @@ object JNI {
     init {
         System.loadLibrary("ndkdemo")
     }
+
     /**
      * A native method that is implemented by the 'ndkdemo' native library,
      * which is packaged with this application.
@@ -17,22 +18,26 @@ object JNI {
 
     external fun decode(pass: String, length: Int): String
 
-    external fun transmit(array: IntArray) : IntArray
+    external fun transmit(array: IntArray): IntArray
 
-    external fun intArraySum(array: IntArray) : Int
+    external fun intArraySum(array: IntArray): Int
 
     external fun testLog()
 
 
-    fun setFaceFeature(feature: FaceFeatureBean){
+    // Kotlin对外public的方法，用于业务调用
+    fun setFaceFeature(feature: FaceFeatureBean) {
         nativeSetFaceFeatureBean(feature)
     }
 
+    // Native层方法
     private external fun nativeSetFaceFeatureBean(feature: FaceFeatureBean)
 
-    fun setFaceFeature2(feature: FaceFeatureBean){
+    // Kotlin对外public的方法，用于业务调用
+    fun setFaceFeature2(feature: FaceFeatureBean) {
         nativeSetFaceFeatureBean2(feature)
     }
 
+    // Native层方法
     private external fun nativeSetFaceFeatureBean2(feature: FaceFeatureBean)
 }
