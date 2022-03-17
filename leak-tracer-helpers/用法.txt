@@ -9,10 +9,10 @@ https://www.jianshu.com/p/9058f0514416?utm_campaign=maleskine&utm_content=note&u
 
 
 本案例查看效果为：
-
-在 AndroidLeakTracer\leak-tracer-helpers 目录下 ，右键 使用 Git Bash Hear，然后模拟Linux环境运行下面的脚本
-
-$ ./leak-analyze-addr2line libndkdemo.so NativeLeakLog.txt
+ 1. 拷贝 /sdcard/NativeLeakLog.txt 到当前目录
+ 2. 拷贝 当前运行编译出来的libndkdemo.so文件 到当前目录
+ 3. 在 AndroidLeakTracer\leak-tracer-helpers 目录下 ，右键 使用 Git Bash Hear，然后模拟Linux环境运行下面的脚本
+     $ ./leak-analyze-addr2line libndkdemo.so NativeLeakLog.txt
 
 
 详细运行结果如下所示：
