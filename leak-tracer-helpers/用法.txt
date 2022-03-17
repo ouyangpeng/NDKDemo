@@ -1,0 +1,66 @@
+# AndroidLeakTracer
+
+native内存泄漏检测工具LeakTracer的使用Demo
+
+
+参考链接：
+https://fucknmb.com/2017/06/05/Android-NDK-%E5%86%85%E5%AD%98%E6%B3%84%E9%9C%B2%E6%A3%80%E6%B5%8B/
+https://www.jianshu.com/p/9058f0514416?utm_campaign=maleskine&utm_content=note&utm_medium=seo_notes&utm_source=recommendation
+
+
+本案例查看效果为：
+
+在 AndroidLeakTracer\leak-tracer-helpers 目录下 ，右键 使用 Git Bash Hear，然后模拟Linux环境运行下面的脚本
+
+$ ./leak-analyze-addr2line libndkdemo.so NativeLeakLog.txt
+
+
+详细运行结果如下所示：
+$ ./leak-analyze-addr2line libndkdemo.so NativeLeakLog.txt
+Processing "NativeLeakLog.txt" log for "libndkdemo.so"
+Matching addresses to "libndkdemo.so"
+found 8 leak(s)
+C:\msys64\mingw64\bin\addr2line.exe: DWARF error: could not find variable specification at offset 54
+16 bytes lost in 1 blocks (one of them allocated at 27214.063572), from following call stack:
+        D:/NDKDemo/app/src/main/cpp/libleaktracer/src/MemoryTrace.cpp:310
+        D:/NDKDemo/app/src/main/cpp/libleaktracer/include/MemoryTrace.hpp:384
+        D:/NDKDemo/app/src/main/cpp/libleaktracer/src/AllocationHandlers.cpp:40
+        D:/NDKDemo/app/src/main/cpp/native-lib.cpp:325
+16 bytes lost in 1 blocks (one of them allocated at 27214.064215), from following call stack:
+        D:/NDKDemo/app/src/main/cpp/libleaktracer/src/MemoryTrace.cpp:310
+        D:/NDKDemo/app/src/main/cpp/libleaktracer/include/MemoryTrace.hpp:384
+        D:/NDKDemo/app/src/main/cpp/libleaktracer/src/AllocationHandlers.cpp:40
+        D:/NDKDemo/app/src/main/cpp/native-lib.cpp:410
+16 bytes lost in 1 blocks (one of them allocated at 27214.064132), from following call stack:
+        D:/NDKDemo/app/src/main/cpp/libleaktracer/src/MemoryTrace.cpp:310
+        D:/NDKDemo/app/src/main/cpp/libleaktracer/include/MemoryTrace.hpp:384
+        D:/NDKDemo/app/src/main/cpp/libleaktracer/src/AllocationHandlers.cpp:40
+        D:/NDKDemo/app/src/main/cpp/native-lib.cpp:385
+72 bytes lost in 1 blocks (one of them allocated at 27214.056494), from following call stack:
+        D:/NDKDemo/app/src/main/cpp/libleaktracer/src/MemoryTrace.cpp:310
+        D:/NDKDemo/app/src/main/cpp/libleaktracer/include/MemoryTrace.hpp:384
+        D:/NDKDemo/app/src/main/cpp/libleaktracer/src/AllocationHandlers.cpp:77
+        D:/NDKDemo/app/src/main/cpp/native-lib.cpp:61
+        D:/NDKDemo/app/src/main/cpp/native-lib.cpp:88
+16 bytes lost in 1 blocks (one of them allocated at 27214.063386), from following call stack:
+        D:/NDKDemo/app/src/main/cpp/libleaktracer/src/MemoryTrace.cpp:310
+        D:/NDKDemo/app/src/main/cpp/libleaktracer/include/MemoryTrace.hpp:384
+        D:/NDKDemo/app/src/main/cpp/libleaktracer/src/AllocationHandlers.cpp:40
+        D:/NDKDemo/app/src/main/cpp/native-lib.cpp:278
+72 bytes lost in 1 blocks (one of them allocated at 27214.056919), from following call stack:
+        D:/NDKDemo/app/src/main/cpp/libleaktracer/src/MemoryTrace.cpp:310
+        D:/NDKDemo/app/src/main/cpp/libleaktracer/include/MemoryTrace.hpp:384
+        D:/NDKDemo/app/src/main/cpp/libleaktracer/src/AllocationHandlers.cpp:77
+        D:/NDKDemo/app/src/main/cpp/native-lib.cpp:61
+        D:/NDKDemo/app/src/main/cpp/native-lib.cpp:105
+16 bytes lost in 1 blocks (one of them allocated at 27214.063511), from following call stack:
+        D:/NDKDemo/app/src/main/cpp/libleaktracer/src/MemoryTrace.cpp:310
+        D:/NDKDemo/app/src/main/cpp/libleaktracer/include/MemoryTrace.hpp:384
+        D:/NDKDemo/app/src/main/cpp/libleaktracer/src/AllocationHandlers.cpp:40
+        D:/NDKDemo/app/src/main/cpp/native-lib.cpp:300
+16 bytes lost in 1 blocks (one of them allocated at 27214.064305), from following call stack:
+        D:/NDKDemo/app/src/main/cpp/libleaktracer/src/MemoryTrace.cpp:310
+        D:/NDKDemo/app/src/main/cpp/libleaktracer/include/MemoryTrace.hpp:384
+        D:/NDKDemo/app/src/main/cpp/libleaktracer/src/AllocationHandlers.cpp:40
+        D:/NDKDemo/app/src/main/cpp/native-lib.cpp:440
+

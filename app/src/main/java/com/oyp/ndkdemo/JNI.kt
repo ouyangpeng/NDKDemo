@@ -1,6 +1,6 @@
 package com.oyp.ndkdemo
 
-import android.graphics.PointF
+import java.io.File
 
 object JNI {
     // Used to load the 'ndkdemo' library on application startup.
@@ -40,4 +40,47 @@ object JNI {
 
     // Native层方法
     private external fun nativeSetFaceFeatureBean2(feature: FaceFeatureBean)
+
+
+    /**
+     * starts monitoring memory allocations in all threads
+     */
+    external fun startMonitoringAllThreads()
+
+    /**
+     * starts monitoring memory allocations in current thread
+     */
+    external fun startMonitoringThisThread()
+
+    /**
+     * stops monitoring memory allocations (in all threads or in
+     * this thread only, depends on the function used to start
+     * monitoring
+     */
+    external fun stopMonitoringAllocations()
+
+    /**
+     * stops all monitoring - both of allocations and releases
+     */
+    external fun stopAllMonitoring()
+
+
+    /**
+     * writes report with all memory leaks
+     */
+    private external fun writeLeaksToFile(filePath: String)
+
+    /**
+     * writes report with all memory leaks
+     */
+    fun writeLeaksResultToFile(filePath: String?) {
+        if (filePath == null) {
+            throw NullPointerException("filePath is null")
+        }
+        val file = File(filePath)
+        require(!(file.exists() && file.isDirectory)) { "can not write data to a directory" }
+        require(!(!file.parentFile.exists() && !file.parentFile.mkdirs())) { "can not create parent folder for file '" + file.absolutePath + "'" }
+        writeLeaksToFile(filePath)
+    }
+
 }

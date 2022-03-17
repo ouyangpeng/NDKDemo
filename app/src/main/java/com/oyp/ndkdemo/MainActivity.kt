@@ -1,13 +1,20 @@
 package com.oyp.ndkdemo
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.graphics.PointF
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.oyp.ndkdemo.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     private val TAG = "NDKDemo"
     private lateinit var binding: ActivityMainBinding
+
+    private val ACTION_REQUEST_PERMISSIONS = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -15,6 +22,33 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                ACTION_REQUEST_PERMISSIONS
+            )
+        } else {
+            testNativeLeak()
+        }
+    }
+
+    private fun testNativeLeak() {
+        // 开启监控
+        JNI.startMonitoringAllThreads()
+
+        // 执行Native方法
+        testNativeMethod()
+
+        JNI.stopAllMonitoring()
+        JNI.writeLeaksResultToFile("sdcard/NativeLeakLog.txt")
+    }
+
+    private fun testNativeMethod() {
         JNI.testLog()
 
         // 调用jni方法 返回一个C++的字符串
@@ -69,6 +103,25 @@ class MainActivity : AppCompatActivity() {
         JNI.setFaceFeature(bean)
 
         JNI.setFaceFeature2(bean)
+    }
 
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String?>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == ACTION_REQUEST_PERMISSIONS) {
+            var isAllGranted = true
+            for (grantResult in grantResults) {
+                isAllGranted = isAllGranted and (grantResult == PackageManager.PERMISSION_GRANTED)
+            }
+            if (isAllGranted) {
+                testNativeLeak()
+            } else {
+                Toast.makeText(this.applicationContext, "权限被拒绝", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }
