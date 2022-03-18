@@ -395,26 +395,26 @@ public:
     std::vector<float> visibilities;
 };
 
-void showNativeFaceFeatureBeanClass(NativeFaceFeatureBeanClass &faceFeatureBean, int boundingBoxLength,
-                                    int landmarksLength, int visibilitiesLength) {
-    LOGD("showNativeFaceFeatureBean() faceFeatureBean中faceId = %d,yaw = %f,pitch = %f,roll = %f",
+void showNativeFaceFeatureBeanClass(NativeFaceFeatureBeanClass &faceFeatureBean) {
+    LOGD("showNativeFaceFeatureBeanClass() faceFeatureBean中faceId = %d,yaw = %f,pitch = %f,roll = %f",
          faceFeatureBean.faceId,
          faceFeatureBean.yaw, faceFeatureBean.pitch, faceFeatureBean.roll)
 
-    for (int i = 0; i < boundingBoxLength; i++) {
-        LOGD("showNativeFaceFeatureBean() faceFeatureBean.boundingBoxArray数组中 第 %d 个值为：x = %f , y = %f",
+    for (int i = 0; i < faceFeatureBean.boundingBox.size(); i++) {
+        LOGD("showNativeFaceFeatureBeanClass() faceFeatureBean.boundingBoxArray数组中 第 %d 个值为：x = %f , y = %f",
              i + 1,
              faceFeatureBean.boundingBox[i].x, faceFeatureBean.boundingBox[i].y)
     }
 
-    for (int i = 0; i < landmarksLength; i++) {
-        LOGD("showNativeFaceFeatureBean() faceFeatureBean.landmarksArray 数组中 第 %d 个值为：x = %f , y = %f",
+
+    for (int i = 0; i < faceFeatureBean.landmarks.size(); i++) {
+        LOGD("showNativeFaceFeatureBeanClass() faceFeatureBean.landmarksArray 数组中 第 %d 个值为：x = %f , y = %f",
              i + 1,
              faceFeatureBean.landmarks[i].x, faceFeatureBean.landmarks[i].y)
     }
 
-    for (int i = 0; i < visibilitiesLength; i++) {
-        LOGD("showNativeFaceFeatureBean() faceFeatureBean.visibilities 数组中 第 %d 个值为： %f ", i + 1,
+    for (int i = 0; i < faceFeatureBean.visibilities.size(); i++) {
+        LOGD("showNativeFaceFeatureBeanClass() faceFeatureBean.visibilities 数组中 第 %d 个值为： %f ", i + 1,
              faceFeatureBean.visibilities[i])
     }
 }
@@ -519,7 +519,7 @@ Java_com_oyp_ndkdemo_JNI_nativeSetFaceFeatureBean2(JNIEnv *env, jobject thiz, jo
         faceFeatureBean->landmarks[i].x = x;
         faceFeatureBean->landmarks[i].y = y;
     }
-    showNativeFaceFeatureBeanClass(*faceFeatureBean, boundingBoxSize, landmarksSize, visibilitiesSize);
+    showNativeFaceFeatureBeanClass(*faceFeatureBean);
 
     delete faceFeatureBean;
 }
