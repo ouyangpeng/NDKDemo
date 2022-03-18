@@ -29,9 +29,15 @@ object JNI {
     fun setFaceFeature(feature: FaceFeatureBean) {
         nativeSetFaceFeatureBean(feature)
     }
+    // Kotlin对外public的方法，用于业务调用
+    fun setFaceFeature2(feature: FaceFeatureBean) {
+        nativeSetFaceFeatureBean2(feature)
+    }
 
     // Native层方法
     private external fun nativeSetFaceFeatureBean(feature: FaceFeatureBean)
+
+    private external fun nativeSetFaceFeatureBean2(feature: FaceFeatureBean)
 
 
     /**

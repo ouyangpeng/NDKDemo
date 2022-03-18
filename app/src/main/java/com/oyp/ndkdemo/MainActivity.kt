@@ -101,6 +101,7 @@ class MainActivity : AppCompatActivity() {
         )
 
         JNI.setFaceFeature(bean)
+        JNI.setFaceFeature2(bean)
     }
 
 
