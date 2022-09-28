@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.PointF
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -69,13 +70,7 @@ class MainActivity : AppCompatActivity() {
         val text6 = "调用C++ 方法 修改后：${array.contentToString()}"
         val text7 = "调用C++ 方法 修改后 数组的和为：${JNI.intArraySum(array)}"
 
-        binding.sampleText.text = "从C层返回的字符串为：\n$text1" +
-                "\n\n 秘文为：\n$text2" +
-                "\n\n 原文为：\n$text3" +
-                "\n\n $text4" +
-                "\n\n $text5 " +
-                "\n\n $text6  " +
-                "\n\n $text7"
+
 
 
         // 传递给C++ 实体类  去jni层解析
@@ -102,6 +97,17 @@ class MainActivity : AppCompatActivity() {
 
         JNI.setFaceFeature(bean)
         JNI.setFaceFeature2(bean)
+
+        val student = JNI.getStudentFromJNI();
+
+        binding.sampleText.text = "从C层返回的字符串为：\n$text1" +
+                "\n\n 秘文为：\n$text2" +
+                "\n\n 原文为：\n$text3" +
+                "\n\n $text4" +
+                "\n\n $text5 " +
+                "\n\n $text6  " +
+                "\n\n $text7" +
+                "\n\n 调用C函数返回的结构体转换java bean为； ${student.getStudentInfo()}"
     }
 
 

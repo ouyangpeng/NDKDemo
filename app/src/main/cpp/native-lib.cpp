@@ -93,7 +93,7 @@ Java_com_oyp_ndkdemo_JNI_encode(JNIEnv *env, jobject thiz, jstring pass, jint le
         *(cstr + i) += 1;
     }
     LOGD("加密后的字符串为:【%s】", cstr)
-    jstring  result =  env->NewStringUTF(cstr);
+    jstring result = env->NewStringUTF(cstr);
     delete[] cstr;
     return result;
 }
@@ -112,7 +112,7 @@ Java_com_oyp_ndkdemo_JNI_decode(JNIEnv *env, jobject thiz, jstring pass, jint le
         *(cstr + i) -= 1;
     }
     LOGD("加密前的字符串为:【%s】", cstr)
-    jstring  result =  env->NewStringUTF(cstr);
+    jstring result = env->NewStringUTF(cstr);
     delete[] cstr;
     return result;
 }
@@ -196,6 +196,7 @@ struct NativeFaceFeatureBean {
             visibilities = nullptr;
         }
     }
+
     int faceId;
     float yaw;
     float pitch;
@@ -284,7 +285,7 @@ Java_com_oyp_ndkdemo_JNI_nativeSetFaceFeatureBean(JNIEnv *env, jobject thiz, job
 //    LOGD("faceId = %d,yaw = %f,pitch = %f,roll = %f", faceId, yaw, pitch, roll)
 
 
-    auto* faceFeatureBean = new NativeFaceFeatureBean();
+    auto *faceFeatureBean = new NativeFaceFeatureBean();
     faceFeatureBean->faceId = faceId;
     faceFeatureBean->yaw = yaw;
     faceFeatureBean->pitch = pitch;
@@ -381,11 +382,13 @@ public:
         pitch = 0;
         roll = 0;
     }
+
     ~NativeFaceFeatureBeanClass() {
-        if(!boundingBox.empty()) boundingBox.clear();
-        if(!landmarks.empty()) landmarks.clear();
-        if(!visibilities.empty()) visibilities.clear();
+        if (!boundingBox.empty()) boundingBox.clear();
+        if (!landmarks.empty()) landmarks.clear();
+        if (!visibilities.empty()) visibilities.clear();
     }
+
     int faceId;
     float yaw;
     float pitch;
@@ -414,7 +417,8 @@ void showNativeFaceFeatureBeanClass(NativeFaceFeatureBeanClass &faceFeatureBean)
     }
 
     for (int i = 0; i < faceFeatureBean.visibilities.size(); i++) {
-        LOGD("showNativeFaceFeatureBeanClass() faceFeatureBean.visibilities 数组中 第 %d 个值为： %f ", i + 1,
+        LOGD("showNativeFaceFeatureBeanClass() faceFeatureBean.visibilities 数组中 第 %d 个值为： %f ",
+             i + 1,
              faceFeatureBean.visibilities[i])
     }
 }
@@ -440,7 +444,7 @@ Java_com_oyp_ndkdemo_JNI_nativeSetFaceFeatureBean2(JNIEnv *env, jobject thiz, jo
 //    LOGD("faceId = %d,yaw = %f,pitch = %f,roll = %f", faceId, yaw, pitch, roll)
 
 
-    auto* faceFeatureBean = new NativeFaceFeatureBeanClass();
+    auto *faceFeatureBean = new NativeFaceFeatureBeanClass();
     faceFeatureBean->faceId = faceId;
     faceFeatureBean->yaw = yaw;
     faceFeatureBean->pitch = pitch;
@@ -522,4 +526,48 @@ Java_com_oyp_ndkdemo_JNI_nativeSetFaceFeatureBean2(JNIEnv *env, jobject thiz, jo
     showNativeFaceFeatureBeanClass(*faceFeatureBean);
 
     delete faceFeatureBean;
+}
+
+struct Student {
+    std::string id;
+    std::string name;
+    int age;
+};
+
+Student getStudent() {
+    Student student;
+    student.age = 18;
+    student.id = "001";
+    student.name = "OuyangPeng";
+    return student;
+}
+
+extern "C"
+JNIEXPORT jobject JNICALL
+Java_com_oyp_ndkdemo_JNI_getStudentFromJNI(JNIEnv *env, jobject thiz) {
+    Student stu;
+    // 调用算法 获取Student数据
+    stu = getStudent();
+    LOGD("student's id is %s", stu.id.c_str())
+    LOGD("student's name is %s", stu.name.c_str())
+    LOGD("student's age is %d", stu.age)
+    // 1）获取java ReturnInfo对象的jclass；
+    jclass StudentClass = env->FindClass("com/oyp/ndkdemo/Student");
+    // 2）获取构造方法ID；
+    jmethodID jmId = env->GetMethodID(StudentClass, "<init>","()V");
+    // 3）通过构造方法ID创建Java WashingHandResult对象；
+    jobject StudentObject = env->NewObject(StudentClass, jmId);
+    // 4）获取Student对象的字段ID；
+    jfieldID idField = env->GetFieldID(StudentClass, "id", "Ljava/lang/String;");
+    jfieldID nameField = env->GetFieldID(StudentClass, "name", "Ljava/lang/String;");
+    jfieldID ageField = env->GetFieldID(StudentClass, "age", "I");
+    // 5）通过字段ID给每个字段赋值
+    jstring id = env->NewStringUTF(stu.id.c_str());
+    env->SetObjectField(StudentObject, idField, id);
+    jstring name = env->NewStringUTF(stu.name.c_str());
+    env->SetObjectField(StudentObject, nameField, name);
+    jint age = stu.age;
+    env->SetIntField(StudentObject, ageField, age);
+    // 6） 返回Java对象
+    return StudentObject;
 }
