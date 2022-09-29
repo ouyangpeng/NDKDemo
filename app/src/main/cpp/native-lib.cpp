@@ -138,6 +138,29 @@ Java_com_oyp_ndkdemo_JNI_transmit(JNIEnv *env, jobject thiz, jintArray intArray)
     return intArray;
 }
 
+void test(int *Data) {
+    Data[0] = 1;
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_oyp_ndkdemo_JNI_testStackAndHeap(JNIEnv *env, jobject thiz) {
+    // 申请一个超级大的数组
+
+    // 1. 直接在栈空间申请大内存，会crash
+    //    int sig_data[180000000] = {0};
+
+    // 2. 通过new和delete关键字，这样的对象内存分配在堆内存中，不会crash
+//    int* sig_data = new int[180000000];
+//    test(sig_data);
+//    delete[] sig_data;
+
+    // 3.通过malloc和free关键字, 这样的对象内存分配在堆内存中，不会crash
+    int* sig_data = (int * )malloc(180000000 *sizeof(int));
+    test(sig_data);
+    free(sig_data);
+}
+
 extern "C"
 JNIEXPORT jint JNICALL
 Java_com_oyp_ndkdemo_JNI_intArraySum(JNIEnv *env, jobject thiz, jintArray intArray) {

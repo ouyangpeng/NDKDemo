@@ -14,6 +14,8 @@ object JNI {
      */
     external fun stringFromJNI(): String
 
+    external fun testStackAndHeap()
+
     external fun getStudentFromJNI():Student
 
     external fun encode(pass: String, length: Int): String
