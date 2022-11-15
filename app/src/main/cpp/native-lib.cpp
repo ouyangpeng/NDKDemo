@@ -156,7 +156,7 @@ Java_com_oyp_ndkdemo_JNI_testStackAndHeap(JNIEnv *env, jobject thiz) {
 //    delete[] sig_data;
 
     // 3.通过malloc和free关键字, 这样的对象内存分配在堆内存中，不会crash
-    int* sig_data = (int * )malloc(180000000 *sizeof(int));
+    int *sig_data = (int *) malloc(180000000 * sizeof(int));
     test(sig_data);
     free(sig_data);
 }
@@ -577,7 +577,7 @@ Java_com_oyp_ndkdemo_JNI_getStudentFromJNI(JNIEnv *env, jobject thiz) {
     // 1）获取java ReturnInfo对象的jclass；
     jclass StudentClass = env->FindClass("com/oyp/ndkdemo/Student");
     // 2）获取构造方法ID；
-    jmethodID jmId = env->GetMethodID(StudentClass, "<init>","()V");
+    jmethodID jmId = env->GetMethodID(StudentClass, "<init>", "()V");
     // 3）通过构造方法ID创建Java WashingHandResult对象；
     jobject StudentObject = env->NewObject(StudentClass, jmId);
     // 4）获取Student对象的字段ID；
@@ -593,4 +593,51 @@ Java_com_oyp_ndkdemo_JNI_getStudentFromJNI(JNIEnv *env, jobject thiz) {
     env->SetIntField(StudentObject, ageField, age);
     // 6） 返回Java对象
     return StudentObject;
+}
+
+#define CHARSET_UTF8 "UTF-8"
+
+char *jstringToChar(JNIEnv *env, jstring jstr) {
+    char *returnCharArray = nullptr;
+    jclass jclassName = env->FindClass("java/lang/String");
+    jmethodID jmethodName = env->GetMethodID(jclassName, "getBytes", "(Ljava/lang/String;)[B");
+    // 调用java.lang.String类的getBytes(String charsetName)方法，得到byte[]数组
+    auto byteArray = (jbyteArray) env->CallObjectMethod(jstr, jmethodName, env->NewStringUTF(CHARSET_UTF8));
+    // 获取jbyteArray数组长度
+    jsize byteArraySize = env->GetArrayLength(byteArray);
+    jbyte *jData = env->GetByteArrayElements(byteArray, JNI_FALSE);
+    // byte数组转char数组
+    if (byteArraySize > 0) {
+        returnCharArray = (char *) malloc(byteArraySize + 1); //new char[byteArraySize+1];
+        memcpy(returnCharArray, jData, byteArraySize);
+        returnCharArray[byteArraySize] = 0;
+    }
+    env->ReleaseByteArrayElements(byteArray, jData, 0);
+    return returnCharArray;
+}
+
+jstring charToJstring(JNIEnv *env, const char *charTobeConvert) {
+    jclass strClass = env->FindClass("java/lang/String");
+    // 调用 String(byte bytes[], String charsetName)构造方法
+    jmethodID initMethodName = env->GetMethodID(strClass, "<init>", "([BLjava/lang/String;)V");
+    jbyteArray bytes = env->NewByteArray(strlen(charTobeConvert));
+    env->SetByteArrayRegion(bytes, 0, strlen(charTobeConvert), (jbyte *) charTobeConvert);
+    jstring encoding = env->NewStringUTF(CHARSET_UTF8);
+    return (jstring) env->NewObject(strClass, initMethodName, bytes, encoding);
+}
+
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_oyp_ndkdemo_JNI_testJstringToChar(JNIEnv *env, jobject thiz, jstring jstr) {
+    char *charArray = jstringToChar(env, jstr);
+    LOGD("转换后的charArray为: %s", charArray)
+}
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_oyp_ndkdemo_JNI_testCharToJstring(JNIEnv *env, jobject thiz) {
+    char *charArray = "===============测试Char字符串转换Jstring===============";
+    jstring jst = charToJstring(env,charArray);
+    char *charArray2 = jstringToChar(env, jst);
+    LOGD("转换后的jstring内容为: %s", charArray2)
 }

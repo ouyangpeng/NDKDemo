@@ -28,6 +28,9 @@ object JNI {
 
     external fun testLog()
 
+    external fun testJstringToChar(str:String)
+    external fun testCharToJstring()
+
 
     // Kotlin对外public的方法，用于业务调用
     fun setFaceFeature(feature: FaceFeatureBean) {

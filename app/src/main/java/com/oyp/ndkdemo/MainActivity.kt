@@ -110,6 +110,10 @@ class MainActivity : AppCompatActivity() {
                 "\n\n $text6  " +
                 "\n\n $text7" +
                 "\n\n 调用C函数返回的结构体转换java bean为； ${student.getStudentInfo()}"
+
+
+        JNI.testJstringToChar("===============测试Jstring转换Char字符串===============")
+        JNI.testCharToJstring()
     }
 
 
